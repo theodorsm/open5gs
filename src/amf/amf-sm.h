@@ -21,6 +21,7 @@
 #define AMF_SM_H
 
 #include "event.h"
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,6 +45,8 @@ void gmm_state_initial_context_setup(ogs_fsm_t *s, amf_event_t *e);
 void gmm_state_registered(ogs_fsm_t *s, amf_event_t *e);
 void gmm_state_ue_context_will_remove(ogs_fsm_t *s, amf_event_t *e);
 void gmm_state_exception(ogs_fsm_t *s, amf_event_t *e);
+
+extern bool TESTCASE_ENABLED;
 
 #define amf_sm_debug(__pe) \
     ogs_debug("%s(): %s", __func__, amf_event_get_name(__pe))

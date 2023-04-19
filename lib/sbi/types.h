@@ -155,6 +155,7 @@ typedef enum {
 
 #define OGS_SBI_SERVICE_NAME_NAMF_CALLBACK "namf-callback"
 #define OGS_SBI_SERVICE_NAME_NSMF_CALLBACK "nsmf-callback"
+#define OGS_SBI_SERVICE_NAME_TESTCASE_ENABLE "testcase-enable"
 
 OpenAPI_nf_type_e ogs_sbi_service_type_to_nf_type(
         ogs_sbi_service_type_e service_type);

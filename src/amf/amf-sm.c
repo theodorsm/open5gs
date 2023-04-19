@@ -27,6 +27,8 @@
 #include "nnssf-handler.h"
 #include "nas-security.h"
 
+bool TESTCASE_ENABLED = false;
+
 void amf_state_initial(ogs_fsm_t *s, amf_event_t *e)
 {
     amf_sm_debug(e);
@@ -230,6 +232,25 @@ void amf_state_operational(ogs_fsm_t *s, amf_event_t *e)
                         OGS_SBI_HTTP_STATUS_BAD_REQUEST, &sbi_message,
                         "Invalid resource name",
                         sbi_message.h.resource.component[1]));
+            END
+            break;
+        
+        CASE(OGS_SBI_SERVICE_NAME_TESTCASE_ENABLE)
+            SWITCH(sbi_message.h.resource.component[0])
+            CASE("true")
+                TESTCASE_ENABLED = true;
+                break;
+            CASE("false")
+                TESTCASE_ENABLED = false;
+                break;
+            DEFAULT
+                ogs_error("Invalid resource name [%s]",
+                        sbi_message.h.resource.component[0]);
+                ogs_assert(true ==
+                    ogs_sbi_server_send_error(stream,
+                        OGS_SBI_HTTP_STATUS_BAD_REQUEST, &sbi_message,
+                        "Invalid resource name",
+                        sbi_message.h.resource.component[0]));
             END
             break;
 

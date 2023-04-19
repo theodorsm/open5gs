@@ -21,6 +21,8 @@
 #include "ngap-build.h"
 #include "gmm-build.h"
 #include "nas-path.h"
+#include "amf-sm.h"
+#include "testcases.h"
 
 int nas_5gs_send_to_gnb(amf_ue_t *amf_ue, ogs_pkbuf_t *pkbuf)
 {
@@ -571,7 +573,11 @@ int nas_5gs_send_security_mode_command(amf_ue_t *amf_ue)
     if (amf_ue->t3560.pkbuf) {
         gmmbuf = amf_ue->t3560.pkbuf;
     } else {
-        gmmbuf = gmm_build_security_mode_command(amf_ue);
+        if (TESTCASE_ENABLED) {
+            gmmbuf = testcase_build_security_mode_command(amf_ue);
+        } else {
+            gmmbuf = gmm_build_security_mode_command(amf_ue);
+        }
         if (!gmmbuf) {
             ogs_error("gmm_build_security_mode_command() failed");
             return OGS_ERROR;
