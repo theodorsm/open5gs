@@ -35,6 +35,7 @@ static void show_help(const char *name)
         "Options:\n"
        "   -c filename    : set configuration file\n"
        "   -l filename    : set logging file\n"
+       "   -x filename    : set testcase file\n"
        "   -e level       : set global log-level (default:info)\n"
        "   -m domain      : set log-domain (e.g. mme:sgw:gtp)\n"
        "   -d             : print lots of debugging information\n"
@@ -107,6 +108,7 @@ int main(int argc, const char *const argv[])
         char *log_file;
         char *log_level;
         char *domain_mask;
+        char *testcase_file;
 
         bool enable_debug;
         bool enable_trace;
@@ -116,7 +118,7 @@ int main(int argc, const char *const argv[])
     memset(&optarg, 0, sizeof(optarg));
 
     ogs_getopt_init(&options, (char**)argv);
-    while ((opt = ogs_getopt(&options, "vhDc:l:e:m:dt")) != -1) {
+    while ((opt = ogs_getopt(&options, "vhDc:l:e:m:x:dt")) != -1) {
         switch (opt) {
         case 'v':
             show_version();
@@ -158,6 +160,9 @@ int main(int argc, const char *const argv[])
         case 'm':
             optarg.domain_mask = options.optarg;
             break;
+        case 'x':
+            optarg.testcase_file = options.optarg;
+            break;
         case 'd':
             optarg.enable_debug = true;
             break;
@@ -195,6 +200,10 @@ int main(int argc, const char *const argv[])
     if (optarg.domain_mask) {
         argv_out[i++] = "-m";
         argv_out[i++] = optarg.domain_mask;
+    }
+    if (optarg.testcase_file) {
+        argv_out[i++] = "-x";
+        argv_out[i++] = optarg.testcase_file;
     }
 
     argv_out[i] = NULL;

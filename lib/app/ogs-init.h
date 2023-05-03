@@ -34,6 +34,7 @@ int ogs_app_initialize(
 void ogs_app_terminate(void);
 
 int ogs_app_config_read(void);
+int ogs_app_tester_file_read(void);
 void ogs_app_setup_log(void);
 
 #ifdef __cplusplus

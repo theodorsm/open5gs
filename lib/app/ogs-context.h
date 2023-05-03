@@ -49,6 +49,11 @@ typedef struct ogs_app_context_s {
         const char *domain;
     } logger;
 
+    struct {
+        const char *file;
+        void *document;
+    } tester;
+
     ogs_queue_t *queue;
     ogs_timer_mgr_t *timer_mgr;
     ogs_pollset_t *pollset;
