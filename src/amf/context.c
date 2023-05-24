@@ -900,6 +900,95 @@ int amf_context_parse_config(void)
     return OGS_OK;
 }
 
+int amf_context_parse_testfile(void)
+{
+    int rv;
+    yaml_document_t *document = NULL;
+    ogs_yaml_iter_t root_iter;
+
+    document = ogs_app()->tester.document;
+    ogs_assert(document);
+
+    rv = amf_context_prepare();
+    if (rv != OGS_OK) return rv;
+
+    const char *imsi = NULL;
+
+    ogs_yaml_iter_init(&root_iter, document);
+    while (ogs_yaml_iter_next(&root_iter)) {
+        const char *root_key = ogs_yaml_iter_key(&root_iter);
+        ogs_assert(root_key);
+        if (!strcmp(root_key, "imsi")) {
+            imsi = ogs_yaml_iter_value(&root_iter);
+            ogs_warn("IMSI: %s", imsi);
+        } else if (!strcmp(root_key, "testcases")) {
+            ogs_yaml_iter_t testcase_array, testcase_iter;
+            ogs_yaml_iter_recurse(&root_iter, &testcase_array);
+            int num_of_cases = 0;
+            do {
+                int testcase_id, dereg_timer;
+                int integrity, ciphering;
+
+                if (ogs_yaml_iter_type(&testcase_array) ==
+                        YAML_MAPPING_NODE) {
+                    memcpy(&testcase_iter, &testcase_array,
+                            sizeof(ogs_yaml_iter_t));
+                } else if (ogs_yaml_iter_type(&testcase_array) ==
+                    YAML_SEQUENCE_NODE) {
+                    if (!ogs_yaml_iter_next(&testcase_array))
+                        break;
+                    ogs_yaml_iter_recurse(&testcase_array,
+                            &testcase_iter);
+                } else if (ogs_yaml_iter_type(&testcase_array) ==
+                    YAML_SCALAR_NODE) {
+                    break;
+                } else
+                    ogs_assert_if_reached();
+
+                while (ogs_yaml_iter_next(&testcase_iter)) {
+                    const char *testcase_key =
+                        ogs_yaml_iter_key(&testcase_iter);
+                    ogs_assert(testcase_key);
+                    if (!strcmp(testcase_key, "id")) {
+                        testcase_id = atoi(ogs_yaml_iter_value(&testcase_iter));
+                    } else if (!strcmp(testcase_key, "integrity")) {
+                        integrity = atoi(ogs_yaml_iter_value(&testcase_iter));
+                    } else if (!strcmp(testcase_key, "ciphering")) {
+                        ciphering = atoi(ogs_yaml_iter_value(&testcase_iter));
+                    } else if (!strcmp(testcase_key, "dereg_timer")) {
+                        dereg_timer = atoi(ogs_yaml_iter_value(&testcase_iter));
+                    } else
+                        ogs_warn("unknown key `%s`", testcase_key);
+                }
+
+                if (testcase_id && integrity && ciphering && dereg_timer) {
+                    ogs_warn("Testcase %i: \n"
+                            "integrity(%i), ciphering(%i), dereg_timer(%i)",
+                            testcase_id, integrity, ciphering, dereg_timer);
+                    num_of_cases++;
+                    if (num_of_cases >= TESTCASE_MAX_NUM_OF_CASES) {
+                        ogs_warn("Max number of testcases reached");
+                        break;
+                    }
+                    ogs_app()->tester.testcases[num_of_cases].testcase_id = testcase_id;
+                    ogs_app()->tester.testcases[num_of_cases].integrity = integrity;
+                    ogs_app()->tester.testcases[num_of_cases].ciphering = ciphering;
+                    ogs_app()->tester.testcases[num_of_cases].dereg_timer = dereg_timer;
+                    ogs_app()->tester.num_cases = (uint8_t) num_of_cases;
+                }
+            } while (ogs_yaml_iter_type(&testcase_array) ==
+                    YAML_SEQUENCE_NODE);
+        } else
+            ogs_warn("unknown key `%s`", root_key);
+    }
+
+    rv = amf_context_validation();
+    if (rv != OGS_OK) return rv;
+
+    return OGS_OK;
+}
+
+
 int amf_context_nf_info(void)
 {
     ogs_sbi_nf_instance_t *nf_instance = NULL;

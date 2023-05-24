@@ -644,6 +644,7 @@ void amf_context_final(void);
 amf_context_t *amf_self(void);
 
 int amf_context_parse_config(void);
+int amf_context_parse_testfile(void);
 int amf_context_nf_info(void);
 
 amf_gnb_t *amf_gnb_add(ogs_sock_t *sock, ogs_sockaddr_t *addr);

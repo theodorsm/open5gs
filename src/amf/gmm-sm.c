@@ -1566,9 +1566,6 @@ void gmm_state_security_mode(ogs_fsm_t *s, amf_event_t *e)
 
         h.type = e->nas.type;
 
-        ogs_error("HIT MESSAGE");
-        ogs_error("TESTCASE_ENABLED: [%d]", TESTCASE_ENABLED);
-
         switch (nas_message->gmm.h.message_type) {
         case OGS_NAS_5GS_SECURITY_MODE_COMPLETE:
             ogs_debug("[%s] Security mode complete", amf_ue->supi);

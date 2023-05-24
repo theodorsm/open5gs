@@ -43,6 +43,11 @@ int amf_initialize()
     rv = amf_context_parse_config();
     if (rv != OGS_OK) return rv;
 
+    if (ogs_app()->tester.enabled) {
+        rv = amf_context_parse_testfile();
+        if (rv != OGS_OK) return rv;
+    }
+
     rv = amf_context_nf_info();
     if (rv != OGS_OK) return rv;
 

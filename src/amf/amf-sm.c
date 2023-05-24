@@ -27,8 +27,6 @@
 #include "nnssf-handler.h"
 #include "nas-security.h"
 
-bool TESTCASE_ENABLED = false;
-
 void amf_state_initial(ogs_fsm_t *s, amf_event_t *e)
 {
     amf_sm_debug(e);
@@ -238,10 +236,10 @@ void amf_state_operational(ogs_fsm_t *s, amf_event_t *e)
         CASE(OGS_SBI_SERVICE_NAME_TESTCASE_ENABLE)
             SWITCH(sbi_message.h.resource.component[0])
             CASE("true")
-                TESTCASE_ENABLED = true;
+                ogs_app()->tester.enabled = true;
                 break;
             CASE("false")
-                TESTCASE_ENABLED = false;
+                ogs_app()->tester.enabled = false;
                 break;
             DEFAULT
                 ogs_error("Invalid resource name [%s]",

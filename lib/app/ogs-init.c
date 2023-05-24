@@ -63,7 +63,6 @@ int ogs_app_initialize(
             break;
         case 'x':
             optarg.testcase_file = options.optarg;
-            ogs_info("HIT: '%s'", options.optarg);
             break;
         case '?':
         default:
@@ -324,6 +323,7 @@ int ogs_app_tester_file_read(void)
     }
 
     ogs_app()->tester.document = document;
+    ogs_app()->tester.enabled = true;
 
     yaml_parser_delete(&parser);
     ogs_assert(!fclose(file));

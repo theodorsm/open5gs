@@ -34,6 +34,8 @@ typedef enum {
     OGS_SBI_TLS_ENABLED_NO,
 } ogs_sbi_tls_enabled_mode_e;
 
+#define TESTCASE_MAX_NUM_OF_CASES  256
+
 typedef struct ogs_app_context_s {
     const char *version;
 
@@ -52,6 +54,15 @@ typedef struct ogs_app_context_s {
     struct {
         const char *file;
         void *document;
+        bool enabled;
+        uint8_t num_cases;
+        struct {
+            int testcase_id;
+            int integrity;
+            int ciphering;
+            int dereg_timer;
+        } testcases[TESTCASE_MAX_NUM_OF_CASES];
+
     } tester;
 
     ogs_queue_t *queue;
