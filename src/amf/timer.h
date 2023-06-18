@@ -31,6 +31,7 @@ typedef enum {
     AMF_TIMER_BASE = OGS_MAX_NUM_OF_PROTO_TIMER,
 
     AMF_TIMER_NG_DELAYED_SEND,
+    AMF_TIMER_TEST_DEREG,
     AMF_TIMER_NG_HOLDING,
 
     AMF_TIMER_T3513,
@@ -57,6 +58,7 @@ amf_timer_cfg_t *amf_timer_cfg(amf_timer_e id);
 const char *amf_timer_get_name(int timer_id);
 
 void amf_timer_ng_delayed_send(void *data);
+void amf_timer_test_dereg(void *data);
 
 void amf_timer_t3513_expire(void *data);
 void amf_timer_t3522_expire(void *data);

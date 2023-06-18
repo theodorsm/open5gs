@@ -6,3 +6,4 @@ subprojects/usrsctp
 install
 
 webui/.next
+.cache

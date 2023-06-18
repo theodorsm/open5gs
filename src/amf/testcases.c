@@ -1,6 +1,7 @@
 #include "nas-security.h"
 #include "gmm-build.h"
 #include "amf-sm.h"
+#include "sbi-path.h"
 #include "testcases.h"
 
 #undef OGS_LOG_DOMAIN
@@ -99,4 +100,34 @@ ogs_pkbuf_t *testcase_build_security_mode_command(amf_ue_t *amf_ue)
             amf_ue->kamf, amf_ue->knas_enc);
 
     return nas_5gs_security_encode(amf_ue, &message);
+}
+
+
+int testcase_deregistration(amf_ue_t *amf_ue) {
+    ogs_debug("Testcase: deregistration init");
+    int r;
+    r = nas_5gs_send_de_registration_request(
+            amf_ue,
+            0,
+            OGS_5GMM_CAUSE_5GS_SERVICES_NOT_ALLOWED);
+    ogs_expect(r == OGS_OK);
+    ogs_assert(r != OGS_ERROR);
+    int state = AMF_NETWORK_INITIATED_EXPLICIT_DE_REGISTERED;
+    if (UDM_SDM_SUBSCRIBED(amf_ue)) {
+        r = amf_ue_sbi_discover_and_send(
+                OGS_SBI_SERVICE_TYPE_NUDM_SDM, NULL,
+                amf_nudm_sdm_build_subscription_delete,
+                amf_ue, state, NULL);
+        ogs_expect(r == OGS_OK);
+        ogs_assert(r != OGS_ERROR);
+    } else if (PCF_AM_POLICY_ASSOCIATED(amf_ue)) {
+        r = amf_ue_sbi_discover_and_send(
+                OGS_SBI_SERVICE_TYPE_NPCF_AM_POLICY_CONTROL,
+                NULL,
+                amf_npcf_am_policy_control_build_delete,
+                amf_ue, state, NULL);
+        ogs_expect(r == OGS_OK);
+        ogs_assert(r != OGS_ERROR);
+    }
+    return OGS_OK;
 }
