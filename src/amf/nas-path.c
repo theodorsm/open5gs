@@ -573,7 +573,7 @@ int nas_5gs_send_security_mode_command(amf_ue_t *amf_ue)
     if (amf_ue->t3560.pkbuf) {
         gmmbuf = amf_ue->t3560.pkbuf;
     } else {
-        if (ogs_app()->tester.enabled) {
+        if (is_test_active()) {
             gmmbuf = testcase_build_security_mode_command(amf_ue);
         } else {
             gmmbuf = gmm_build_security_mode_command(amf_ue);

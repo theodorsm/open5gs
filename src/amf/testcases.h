@@ -8,6 +8,7 @@
 extern "C" {
 #endif
 
+bool is_test_active(void);
 ogs_pkbuf_t *testcase_build_security_mode_command(amf_ue_t *amf_ue);
 int testcase_deregistration(amf_ue_t *amf_ue);
 

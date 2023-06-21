@@ -22,6 +22,7 @@
 #include "ngap-path.h"
 #include "sbi-path.h"
 #include "nas-path.h"
+#include "testcases.h"
 
 static bool served_tai_is_found(amf_gnb_t *gnb)
 {
@@ -1938,7 +1939,7 @@ void ngap_handle_pdu_session_resource_setup_response(
 
             ogs_pkbuf_free(param.n2smbuf);
 
-            if (ogs_app()->tester.enabled) {
+            if (is_test_active()) {
                 amf_event_t *e = NULL;
 
                 e = amf_event_new(AMF_EVENT_NGAP_TIMER);
@@ -1948,10 +1949,11 @@ void ngap_handle_pdu_session_resource_setup_response(
                 ogs_assert(e->timer);
                 e->amf_ue = amf_ue;
 
-                // TODO: dynamically choose current testcase
-                ogs_time_t duration = ogs_time_from_sec(ogs_app()->tester.testcases[0].dereg_timer);
+                int current_id = ogs_app()->tester.current_id;
+                ogs_debug("Testcase: current_id: %d",  current_id);
+                ogs_time_t duration = ogs_time_from_sec(ogs_app()->tester.testcases[current_id].dereg_timer);
                 ogs_timer_start(e->timer, duration);
-                ogs_debug("Testcase: started dereg timer");
+                ogs_debug("Testcase: started dereg timer: %d", (int) duration);
             }
         }
     } else if (PDUSessionFailedList) {

@@ -90,6 +90,7 @@ int ogs_app_initialize(
      */
     if (optarg.testcase_file) {
         ogs_app()->tester.file = optarg.testcase_file;
+        ogs_app()->tester.current_id = 0;
 
         rv = ogs_app_tester_file_read();
         if (rv != OGS_OK) return rv;

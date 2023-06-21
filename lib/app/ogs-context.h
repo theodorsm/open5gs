@@ -56,6 +56,7 @@ typedef struct ogs_app_context_s {
         void *document;
         bool enabled;
         uint8_t num_cases;
+        int current_id;
         struct {
             int testcase_id;
             int integrity;

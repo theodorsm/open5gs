@@ -7,7 +7,9 @@
 #undef OGS_LOG_DOMAIN
 #define OGS_LOG_DOMAIN __gmm_log_domain
 
-int enc_alg = 0;
+bool is_test_active(void) {
+    return ogs_app()->tester.enabled && (ogs_app()->tester.current_id < TESTCASE_MAX_NUM_OF_CASES);
+}
 
 ogs_pkbuf_t *testcase_build_security_mode_command(amf_ue_t *amf_ue)
 {
@@ -37,9 +39,11 @@ ogs_pkbuf_t *testcase_build_security_mode_command(amf_ue_t *amf_ue)
         OGS_NAS_EXTENDED_PROTOCOL_DISCRIMINATOR_5GMM;
     message.gmm.h.message_type = OGS_NAS_5GS_SECURITY_MODE_COMMAND;
 
-    amf_ue->selected_int_algorithm = 1;
+    int current_id = ogs_app()->tester.current_id;
+    int int_alg = ogs_app()->tester.testcases[current_id].integrity;
+    int enc_alg = ogs_app()->tester.testcases[current_id].ciphering;
+    amf_ue->selected_int_algorithm = int_alg;
     amf_ue->selected_enc_algorithm = enc_alg;
-    enc_alg++;
 
     selected_nas_security_algorithms->type_of_integrity_protection_algorithm =
         amf_ue->selected_int_algorithm;
@@ -87,12 +91,14 @@ ogs_pkbuf_t *testcase_build_security_mode_command(amf_ue_t *amf_ue)
     additional_security_information->
         retransmission_of_initial_nas_message_request = 1;
 
+    /*
     if (amf_ue->selected_int_algorithm == OGS_NAS_SECURITY_ALGORITHMS_EIA0) {
         ogs_error("Encrypt[0x%x] can be skipped with NEA0, "
             "but Integrity[0x%x] cannot be bypassed with NIA0",
             amf_ue->selected_enc_algorithm, amf_ue->selected_int_algorithm);
         return NULL;
     }
+    */
 
     ogs_kdf_nas_5gs(OGS_KDF_NAS_INT_ALG, amf_ue->selected_int_algorithm,
             amf_ue->kamf, amf_ue->knas_int);

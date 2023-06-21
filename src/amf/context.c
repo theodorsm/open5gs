@@ -961,21 +961,19 @@ int amf_context_parse_testfile(void)
                         ogs_warn("unknown key `%s`", testcase_key);
                 }
 
-                if (testcase_id && integrity && ciphering && dereg_timer) {
-                    ogs_warn("Testcase %i: \n"
-                            "integrity(%i), ciphering(%i), dereg_timer(%i)",
-                            testcase_id, integrity, ciphering, dereg_timer);
-                    num_of_cases++;
-                    if (num_of_cases >= TESTCASE_MAX_NUM_OF_CASES) {
-                        ogs_warn("Max number of testcases reached");
-                        break;
-                    }
-                    ogs_app()->tester.testcases[num_of_cases - 1].testcase_id = testcase_id;
-                    ogs_app()->tester.testcases[num_of_cases - 1].integrity = integrity;
-                    ogs_app()->tester.testcases[num_of_cases - 1].ciphering = ciphering;
-                    ogs_app()->tester.testcases[num_of_cases - 1].dereg_timer = dereg_timer;
-                    ogs_app()->tester.num_cases = (uint8_t) num_of_cases;
+                ogs_warn("Testcase %i: \n"
+                        "integrity(%i), ciphering(%i), dereg_timer(%i)",
+                        testcase_id, integrity, ciphering, dereg_timer);
+                num_of_cases++;
+                if (num_of_cases >= TESTCASE_MAX_NUM_OF_CASES) {
+                    ogs_warn("Max number of testcases reached");
+                    break;
                 }
+                ogs_app()->tester.testcases[num_of_cases - 1].testcase_id = testcase_id;
+                ogs_app()->tester.testcases[num_of_cases - 1].integrity = integrity;
+                ogs_app()->tester.testcases[num_of_cases - 1].ciphering = ciphering;
+                ogs_app()->tester.testcases[num_of_cases - 1].dereg_timer = dereg_timer;
+                ogs_app()->tester.num_cases = (uint8_t) num_of_cases;
             } while (ogs_yaml_iter_type(&testcase_array) ==
                     YAML_SEQUENCE_NODE);
         } else

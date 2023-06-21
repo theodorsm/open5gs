@@ -829,6 +829,8 @@ void amf_state_operational(ogs_fsm_t *s, amf_event_t *e)
             ogs_expect(r == OGS_OK);
             ogs_assert(r != OGS_ERROR);
 
+            ogs_app()->tester.current_id += 1;
+
             ogs_timer_delete(e->timer);
             break;
         case AMF_TIMER_NG_DELAYED_SEND:
