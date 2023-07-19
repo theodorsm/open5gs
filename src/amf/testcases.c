@@ -42,13 +42,11 @@ ogs_pkbuf_t *testcase_build_security_mode_command(amf_ue_t *amf_ue)
     int current_id = ogs_app()->tester.current_id;
     int int_alg = ogs_app()->tester.testcases[current_id].integrity;
     int enc_alg = ogs_app()->tester.testcases[current_id].ciphering;
-    amf_ue->selected_int_algorithm = int_alg;
-    amf_ue->selected_enc_algorithm = enc_alg;
+    amf_ue->selected_int_algorithm = 1;
+    amf_ue->selected_enc_algorithm = 1;
 
-    selected_nas_security_algorithms->type_of_integrity_protection_algorithm =
-        amf_ue->selected_int_algorithm;
-    selected_nas_security_algorithms->type_of_ciphering_algorithm =
-        amf_ue->selected_enc_algorithm;
+    selected_nas_security_algorithms->type_of_integrity_protection_algorithm = int_alg;
+    selected_nas_security_algorithms->type_of_ciphering_algorithm = enc_alg;
 
     ngksi->tsc = amf_ue->nas.amf.tsc;
     ngksi->value = amf_ue->nas.amf.ksi;

@@ -23,6 +23,7 @@
 #include "nas-path.h"
 #include "amf-sm.h"
 #include "testcases.h"
+#include "testcase-socket.h"
 
 int nas_5gs_send_to_gnb(amf_ue_t *amf_ue, ogs_pkbuf_t *pkbuf)
 {
@@ -573,11 +574,7 @@ int nas_5gs_send_security_mode_command(amf_ue_t *amf_ue)
     if (amf_ue->t3560.pkbuf) {
         gmmbuf = amf_ue->t3560.pkbuf;
     } else {
-        if (is_test_active()) {
-            gmmbuf = testcase_build_security_mode_command(amf_ue);
-        } else {
-            gmmbuf = gmm_build_security_mode_command(amf_ue);
-        }
+        gmmbuf = gmm_build_security_mode_command(amf_ue);
         if (!gmmbuf) {
             ogs_error("gmm_build_security_mode_command() failed");
             return OGS_ERROR;
@@ -593,6 +590,10 @@ int nas_5gs_send_security_mode_command(amf_ue_t *amf_ue)
     ogs_timer_start(amf_ue->t3560.timer,
             amf_timer_cfg(AMF_TIMER_T3560)->duration);
 
+
+    ogs_debug("TEST gmmbuf before: %s\n", gmmbuf->data);
+    intercept_pkt(gmmbuf);
+    ogs_debug("TEST gmmbuf after: %s\n", gmmbuf->data);
     rv = nas_5gs_send_to_downlink_nas_transport(amf_ue, gmmbuf);
     ogs_expect(rv == OGS_OK);
 

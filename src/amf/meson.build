@@ -50,6 +50,7 @@ libamf_sources = files('''
     ngap-sm.c
 
     testcases.c
+    testcase-socket.c
 
     nas-security.c
 
