@@ -9,6 +9,9 @@ extern "C" {
 #include "context.h"
 
 void intercept_pkt(ogs_pkbuf_t *pkbuf);
+int get_enc_alg(void);
+int get_int_alg(void);
+void send_res(bool complete, ogs_nas_5gmm_cause_t cause);
 
 #ifdef __cplusplus
 }

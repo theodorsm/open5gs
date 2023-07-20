@@ -819,23 +819,11 @@ void amf_state_operational(ogs_fsm_t *s, amf_event_t *e)
         break;
 
     case AMF_EVENT_NGAP_TIMER:
+        ran_ue = e->ran_ue;
+        ogs_assert(ran_ue);
 
         switch (e->h.timer_id) {
-        case AMF_TIMER_TEST_DEREG:
-            ogs_debug("Testcase: dereg timer event");
-            ogs_assert(e->amf_ue);
-
-            r = testcase_deregistration(e->amf_ue);
-            ogs_expect(r == OGS_OK);
-            ogs_assert(r != OGS_ERROR);
-
-            ogs_app()->tester.current_id += 1;
-
-            ogs_timer_delete(e->timer);
-            break;
         case AMF_TIMER_NG_DELAYED_SEND:
-            ran_ue = e->ran_ue;
-            ogs_assert(ran_ue);
             gnb = e->gnb;
             ogs_assert(gnb);
             pkbuf = e->pkbuf;
@@ -847,8 +835,6 @@ void amf_state_operational(ogs_fsm_t *s, amf_event_t *e)
             ogs_timer_delete(e->timer);
             break;
         case AMF_TIMER_NG_HOLDING:
-            ran_ue = e->ran_ue;
-            ogs_assert(ran_ue);
             ogs_warn("Implicit NG release");
             ogs_warn("    RAN_UE_NGAP_ID[%d] AMF_UE_NGAP_ID[%lld]",
                   ran_ue->ran_ue_ngap_id,

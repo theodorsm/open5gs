@@ -79,8 +79,6 @@ const char *amf_timer_get_name(int timer_id)
         return OGS_TIMER_NAME_SBI_CLIENT_WAIT;
     case AMF_TIMER_NG_DELAYED_SEND:
         return "AMF_TIMER_NG_DELAYED_SEND";
-    case AMF_TIMER_TEST_DEREG:
-        return "AMF_TIMER_TEST_DEREG";
     case AMF_TIMER_T3513:
         return "AMF_TIMER_T3513";
     case AMF_TIMER_T3522:
@@ -114,22 +112,6 @@ void amf_timer_ng_delayed_send(void *data)
     ogs_assert(e);
 
     e->h.timer_id = AMF_TIMER_NG_DELAYED_SEND;
-
-    rv = ogs_queue_push(ogs_app()->queue, e);
-    if (rv != OGS_OK) {
-        ogs_error("ogs_queue_push() failed:%d", (int)rv);
-        ogs_timer_delete(e->timer);
-        ogs_event_free(e);
-    }
-}
-
-void amf_timer_test_dereg(void *data)
-{
-    int rv;
-    amf_event_t *e = data;
-    ogs_assert(e);
-
-    e->h.timer_id = AMF_TIMER_TEST_DEREG;
 
     rv = ogs_queue_push(ogs_app()->queue, e);
     if (rv != OGS_OK) {

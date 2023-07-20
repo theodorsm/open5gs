@@ -1,11 +1,21 @@
 imsi: "imsi-999700000000001"
+integrity: 0x2
+ciphering: 0x1
 
 testcases:
   - 
-    integrity: 1
-    ciphering: 1
-    mac: "00000001"
+    integrity: 0x1
+    ciphering: 0x1
   - 
-    integrity: 1
-    ciphering: 0
-    mac: "00000020"
+    sel_integrity: 0x2
+    sel_ciphering: 0x1
+    integrity: 0x2
+    ciphering: 0x1
+  - 
+    integrity: 0x1
+    ciphering: 0x0
+    mac: "00000000"
+  - 
+    integrity: 0x0
+    ciphering: 0xf
+    mac: "00000000"

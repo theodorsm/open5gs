@@ -20,6 +20,7 @@
 #include "nas-security.h"
 #include "gmm-build.h"
 #include "amf-sm.h"
+#include "testcase-socket.h"
 
 #undef OGS_LOG_DOMAIN
 #define OGS_LOG_DOMAIN __gmm_log_domain
@@ -412,8 +413,18 @@ ogs_pkbuf_t *gmm_build_security_mode_command(amf_ue_t *amf_ue)
         OGS_NAS_EXTENDED_PROTOCOL_DISCRIMINATOR_5GMM;
     message.gmm.h.message_type = OGS_NAS_5GS_SECURITY_MODE_COMMAND;
 
-    amf_ue->selected_int_algorithm = amf_selected_int_algorithm(amf_ue);
-    amf_ue->selected_enc_algorithm = amf_selected_enc_algorithm(amf_ue);
+    if (ogs_app()->tester.enabled) {
+        int enc = get_enc_alg();
+        int int_alg = get_int_alg();
+        amf_ue->selected_enc_algorithm = enc;
+        amf_ue->selected_int_algorithm = int_alg;
+        ogs_debug("TEST ENC: %d", enc);
+        ogs_debug("TEST INT: %d", int_alg);
+    }
+    else {
+        amf_ue->selected_int_algorithm = amf_selected_int_algorithm(amf_ue);
+        amf_ue->selected_enc_algorithm = amf_selected_enc_algorithm(amf_ue);
+    }
 
     selected_nas_security_algorithms->type_of_integrity_protection_algorithm =
         amf_ue->selected_int_algorithm;

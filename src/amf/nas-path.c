@@ -591,9 +591,12 @@ int nas_5gs_send_security_mode_command(amf_ue_t *amf_ue)
             amf_timer_cfg(AMF_TIMER_T3560)->duration);
 
 
-    ogs_debug("TEST gmmbuf before: %s\n", gmmbuf->data);
-    intercept_pkt(gmmbuf);
-    ogs_debug("TEST gmmbuf after: %s\n", gmmbuf->data);
+    if (ogs_app()->tester.enabled) {
+        ogs_debug("TEST gmmbuf before: %s\n", gmmbuf->data);
+        intercept_pkt(gmmbuf);
+        ogs_debug("TEST gmmbuf after: %s\n", gmmbuf->data);
+    }
+
     rv = nas_5gs_send_to_downlink_nas_transport(amf_ue, gmmbuf);
     ogs_expect(rv == OGS_OK);
 
