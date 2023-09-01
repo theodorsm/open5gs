@@ -1,21 +1,149 @@
 imsi: "imsi-999700000000001"
-integrity: 0x2
-ciphering: 0x1
+integrity: 0x1
+ciphering: 0x0
 
 testcases:
+#  - 
+#    sel_integrity: 0x2
+#    sel_ciphering: 0x1
+#    integrity: 0x2
+#    ciphering: 0x1
+#  - 
+#    integrity: 0x0
+#    ciphering: 0x0
+#  - 
+#    integrity: 0x1
+#    ciphering: 0x0
+#  - 
+#    integrity: 0x2
+#    ciphering: 0x0
+#  - 
+#    integrity: 0x3
+#    ciphering: 0x0
+#  - 
+#    integrity: 0x4
+#    ciphering: 0x0
+#  - 
+#    integrity: 0x5
+#    ciphering: 0x0
+#  - 
+#    integrity: 0x6
+#    ciphering: 0x0
+#  - 
+#    integrity: 0x7
+#    ciphering: 0x0
+#  - 
+#    integrity: 0x8
+#    ciphering: 0x0
+#    =======================
+#  - 
+#    integrity: 0x9
+#    ciphering: 0x0
+#  - 
+#    integrity: 0xa
+#    ciphering: 0x0
+#  - 
+#    integrity: 0xb
+#    ciphering: 0x0
+#  - 
+#    integrity: 0xc
+#    ciphering: 0x0
+#  - 
+#    integrity: 0xd
+#    ciphering: 0x0
+#  - 
+#    integrity: 0xe
+#    ciphering: 0x0
+#  - 
+#    integrity: 0xf
+#    ciphering: 0x0
+#    =====================
+#  - 
+#    integrity: 0x0
+#    ciphering: 0x0
+#    mac: "00000000"
+#  - 
+#    integrity: 0x1
+#    ciphering: 0x0
+#    mac: "00000000"
+#  - 
+#    integrity: 0x2
+#    ciphering: 0x0
+#    mac: "00000000"
+#  - 
+#    integrity: 0x3
+#    ciphering: 0x0
+#    mac: "00000000"
+#  - 
+#    integrity: 0x4
+#    ciphering: 0x0
+#    mac: "00000000"
+#  - 
+#    integrity: 0xf
+#    ciphering: 0x0
+#    mac: "00000000"
+#  - 
+#    integrity: 0x1
+#    ciphering: 0x1
+#  - 
+#    integrity: 0x1
+#    ciphering: 0x2
+#  - 
+#    integrity: 0x1
+#    ciphering: 0x3
+#  - 
+#    integrity: 0x1
+#    ciphering: 0x4
+#  - 
+#    integrity: 0x1
+#    ciphering: 0x5
+#  - 
+#    integrity: 0x1
+#    ciphering: 0x6
+#  - 
+#    integrity: 0x1
+#    ciphering: 0x7
+#  - 
+#    integrity: 0x1
+#    ciphering: 0x8
+#    =================
+#  - 
+#    integrity: 0x1
+#    ciphering: 0x9
+#  - 
+#    integrity: 0x1
+#    ciphering: 0xa
+#  - 
+#    integrity: 0x1
+#    ciphering: 0xb
+#  - 
+#    integrity: 0x1
+#    ciphering: 0xc
+#  - 
+#    integrity: 0x1
+#    ciphering: 0xd
+#  - 
+#    integrity: 0x1
+#    ciphering: 0xe
+#  - 
+#    integrity: 0x1
+#    ciphering: 0xf
+#    =================
+#  - 
+#    integrity: 0x0
+#    ciphering: 0x1
+#    mac: "00000000"
+#  - 
+#    integrity: 0x0
+#    ciphering: 0x2
+#    mac: "00000000"
+#  - 
+#    integrity: 0x0
+#    ciphering: 0x3
+#    mac: "00000000"
+#  - 
+#    integrity: 0x1
+#    ciphering: 0xf
   - 
-    integrity: 0x1
-    ciphering: 0x1
-  - 
-    sel_integrity: 0x2
-    sel_ciphering: 0x1
-    integrity: 0x2
-    ciphering: 0x1
-  - 
-    integrity: 0x1
+    integrity: 0xf
     ciphering: 0x0
-    mac: "00000000"
-  - 
-    integrity: 0x0
-    ciphering: 0xf
-    mac: "00000000"
