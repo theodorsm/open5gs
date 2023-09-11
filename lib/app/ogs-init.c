@@ -32,7 +32,6 @@ int ogs_app_initialize(
         char *log_file;
         char *log_level;
         char *domain_mask;
-        char *testcase_file;
     } optarg;
 
     ogs_core_initialize();
@@ -47,7 +46,7 @@ int ogs_app_initialize(
     memset(&optarg, 0, sizeof(optarg));
 
     ogs_getopt_init(&options, (char**)argv);
-    while ((opt = ogs_getopt(&options, "c:l:e:m:x:")) != -1) {
+    while ((opt = ogs_getopt(&options, "c:l:e:m:")) != -1) {
         switch (opt) {
         case 'c':
             optarg.config_file = options.optarg;
@@ -60,9 +59,6 @@ int ogs_app_initialize(
             break;
         case 'm':
             optarg.domain_mask = options.optarg;
-            break;
-        case 'x':
-            optarg.testcase_file = options.optarg;
             break;
         case '?':
         default:
@@ -84,18 +80,6 @@ int ogs_app_initialize(
 
     rv = ogs_app_context_parse_config();
     if (rv != OGS_OK) return rv;
-
-    /**************************************************************************
-     * Stage 2.1 : Load Testcase File
-     */
-    if (optarg.testcase_file) {
-        ogs_app()->tester.file = optarg.testcase_file;
-        ogs_app()->tester.supi = NULL;
-
-        //rv = ogs_app_tester_file_read();
-        //if (rv != OGS_OK) return rv;
-
-    }
 
     /**************************************************************************
      * Stage 3 : Initialize Default Memory Pool
@@ -150,7 +134,6 @@ int ogs_app_initialize(
             if (ogs_app()->logger.domain)
                 ogs_info("LOG-DOMAIN: '%s'", ogs_app()->logger.domain);
         }
-        ogs_info("File TESTER: '%s'", ogs_app()->tester.file);
     }
 
     /**************************************************************************
@@ -253,84 +236,6 @@ int ogs_app_config_read(void)
     return OGS_OK;
 }
 
-int ogs_app_tester_file_read(void)
-{
-    FILE *file;
-    yaml_parser_t parser;
-    yaml_document_t *document = NULL;
-
-    ogs_assert(ogs_app()->tester.file);
-
-    file = fopen(ogs_app()->tester.file, "rb");
-    if (!file) {
-        ogs_fatal("cannot open file `%s`", ogs_app()->tester.file);
-        return OGS_ERROR;
-    }
-
-    ogs_assert(yaml_parser_initialize(&parser));
-    yaml_parser_set_input_file(&parser, file);
-
-    document = calloc(1, sizeof(yaml_document_t));
-    if (!yaml_parser_load(&parser, document)) {
-        ogs_fatal("Failed to parse configuration file '%s'", ogs_app()->tester.file);
-        switch (parser.error) {
-        case YAML_MEMORY_ERROR:
-            ogs_error("Memory error: Not enough memory for parsing");
-            break;
-        case YAML_READER_ERROR:
-            if (parser.problem_value != -1)
-                ogs_error("Reader error - %s: #%X at %zd", parser.problem,
-                    parser.problem_value, parser.problem_offset);
-            else
-                ogs_error("Reader error - %s at %zd", parser.problem,
-                    parser.problem_offset);
-            break;
-        case YAML_SCANNER_ERROR:
-            if (parser.context)
-                ogs_error("Scanner error - %s at line %zu, column %zu"
-                        "%s at line %zu, column %zu", parser.context,
-                        parser.context_mark.line+1,
-                        parser.context_mark.column+1,
-                        parser.problem, parser.problem_mark.line+1,
-                        parser.problem_mark.column+1);
-            else
-                ogs_error("Scanner error - %s at line %zu, column %zu",
-                        parser.problem, parser.problem_mark.line+1,
-                        parser.problem_mark.column+1);
-            break;
-        case YAML_PARSER_ERROR:
-            if (parser.context)
-                ogs_error("Parser error - %s at line %zu, column %zu"
-                        "%s at line %zu, column %zu", parser.context,
-                        parser.context_mark.line+1,
-                        parser.context_mark.column+1,
-                        parser.problem, parser.problem_mark.line+1,
-                        parser.problem_mark.column+1);
-            else
-                ogs_error("Parser error - %s at line %zu, column %zu",
-                        parser.problem, parser.problem_mark.line+1,
-                        parser.problem_mark.column+1);
-            break;
-        default:
-            /* Couldn't happen. */
-            ogs_assert_if_reached();
-            break;
-        }
-
-        free(document);
-        yaml_parser_delete(&parser);
-        ogs_assert(!fclose(file));
-        return OGS_ERROR;
-    }
-
-    ogs_app()->tester.document = document;
-    ogs_app()->tester.enabled = true;
-
-    yaml_parser_delete(&parser);
-    ogs_assert(!fclose(file));
-
-    return OGS_OK;
-}
 
 void ogs_app_setup_log(void)
 {

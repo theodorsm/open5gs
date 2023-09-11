@@ -34,7 +34,6 @@ typedef enum {
     OGS_SBI_TLS_ENABLED_NO,
 } ogs_sbi_tls_enabled_mode_e;
 
-#define TESTCASE_MAX_NUM_OF_CASES  256
 
 typedef struct ogs_app_context_s {
     const char *version;
@@ -52,8 +51,6 @@ typedef struct ogs_app_context_s {
     } logger;
 
     struct {
-        const char *file;
-        void *document;
         bool enabled;
         bool result;
         char *supi;

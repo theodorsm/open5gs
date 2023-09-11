@@ -43,11 +43,6 @@ int amf_initialize()
     rv = amf_context_parse_config();
     if (rv != OGS_OK) return rv;
 
-    if (ogs_app()->tester.enabled) {
-        rv = amf_context_parse_testfile();
-        if (rv != OGS_OK) return rv;
-    }
-
     rv = amf_context_nf_info();
     if (rv != OGS_OK) return rv;
 
@@ -68,6 +63,8 @@ int amf_initialize()
 
     thread = ogs_thread_create(amf_main, NULL);
     if (!thread) return OGS_ERROR;
+
+    ogs_app()->tester.supi = NULL;
 
     initialized = 1;
 
