@@ -22,7 +22,6 @@
 #include "gmm-build.h"
 #include "nas-path.h"
 #include "amf-sm.h"
-#include "testcases.h"
 #include "testcase-socket.h"
 
 int nas_5gs_send_to_gnb(amf_ue_t *amf_ue, ogs_pkbuf_t *pkbuf)
@@ -591,12 +590,12 @@ int nas_5gs_send_security_mode_command(amf_ue_t *amf_ue)
             amf_timer_cfg(AMF_TIMER_T3560)->duration);
 
 
-    if (ogs_app()->tester.enabled) {
-        ogs_debug("TEST gmmbuf before: %s\n", gmmbuf->data);
-        uint8_t msg_type = gmmbuf->data[9];
-        ogs_debug("TEST message type: %i\n", msg_type);
-        intercept_pkt(gmmbuf);
-        ogs_debug("TEST gmmbuf after: %s\n", gmmbuf->data);
+    if (testcase_enabled(amf_ue->supi)) {
+        char bufstring[gmmbuf->len * 2];
+        for (int i = 0; i < gmmbuf->len; i++) {
+            sprintf(bufstring+i*2, "%02X", gmmbuf->data[i]);
+        }
+        ogs_debug("TEST OUT GMM: %s", bufstring);
     }
 
     rv = nas_5gs_send_to_downlink_nas_transport(amf_ue, gmmbuf);

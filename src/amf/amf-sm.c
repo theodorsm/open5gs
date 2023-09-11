@@ -26,7 +26,7 @@
 #include "nsmf-handler.h"
 #include "nnssf-handler.h"
 #include "nas-security.h"
-#include "testcases.h"
+#include "testcase-socket.h"
 
 void amf_state_initial(ogs_fsm_t *s, amf_event_t *e)
 {
@@ -238,9 +238,17 @@ void amf_state_operational(ogs_fsm_t *s, amf_event_t *e)
             SWITCH(sbi_message.h.resource.component[0])
             CASE("true")
                 ogs_app()->tester.enabled = true;
+                if (ogs_app()->tester.supi == NULL) {
+                    ogs_app()->tester.supi = malloc((21)*sizeof(char));
+                    get_supi(ogs_app()->tester.supi);
+                }
+                ogs_assert(true == ogs_sbi_send_http_status_no_content(stream));
                 break;
             CASE("false")
                 ogs_app()->tester.enabled = false;
+                free(ogs_app()->tester.supi);
+                ogs_app()->tester.supi = NULL;
+                ogs_assert(true == ogs_sbi_send_http_status_no_content(stream));
                 break;
             DEFAULT
                 ogs_error("Invalid resource name [%s]",

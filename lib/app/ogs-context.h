@@ -55,15 +55,8 @@ typedef struct ogs_app_context_s {
         const char *file;
         void *document;
         bool enabled;
-        uint8_t num_cases;
-        int current_id;
-        struct {
-            int testcase_id;
-            int integrity;
-            int ciphering;
-            int dereg_timer;
-        } testcases[TESTCASE_MAX_NUM_OF_CASES];
-
+        bool result;
+        char *supi;
     } tester;
 
     ogs_queue_t *queue;

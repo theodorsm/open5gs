@@ -18,6 +18,8 @@
  */
 
 #include "nas-security.h"
+#include "testcase-socket.h"
+#include <stdint.h>
 
 #define NAS_SECURITY_MAC_SIZE 4
 
@@ -29,6 +31,13 @@ ogs_pkbuf_t *nas_5gs_security_encode(
     int ciphered = 0;
     ogs_nas_5gs_security_header_t h;
     ogs_pkbuf_t *new = NULL;
+
+    // For testcases
+    ogs_nas_5gs_security_header_t h_mod;
+    memset(&h_mod, 0, sizeof(h_mod));
+    uint8_t msg_type = message->gmm.h.message_type;
+    int modify;
+
 
     ogs_assert(amf_ue);
     ogs_assert(message);
@@ -80,6 +89,37 @@ ogs_pkbuf_t *nas_5gs_security_encode(
         return NULL;
     }
 
+    if (testcase_enabled(amf_ue->supi)) {
+        modify = send_msg_type(msg_type);
+        if (modify == TESTCASE_MODIFY_PLAIN) {
+            ogs_assert(ogs_pkbuf_push(new, 1));
+            *(uint8_t *)(new->data) = h.sequence_number;
+            ogs_assert(ogs_pkbuf_push(new, 6));
+            memcpy(new->data, &h, sizeof(ogs_nas_5gs_security_header_t));
+            modify_msg(new);
+            unsigned char int_enc = new->data[10];
+            amf_ue->selected_enc_algorithm = int_enc >> 4;
+            amf_ue->selected_int_algorithm = int_enc & 0x0F;
+            ogs_debug("TEST enc: %i\n", amf_ue->selected_enc_algorithm);
+            ogs_debug("TEST int: %i\n", amf_ue->selected_int_algorithm);
+            ogs_kdf_nas_5gs(OGS_KDF_NAS_INT_ALG, amf_ue->selected_int_algorithm,
+            amf_ue->kamf, amf_ue->knas_int);
+            ogs_kdf_nas_5gs(OGS_KDF_NAS_ENC_ALG, amf_ue->selected_enc_algorithm,
+            amf_ue->kamf, amf_ue->knas_enc);
+            memcpy(&h_mod.extended_protocol_discriminator, &new->data, sizeof(uint8_t));
+            memcpy(&h_mod.security_header_type, &new->data[1], sizeof(uint8_t));
+            memcpy(&h_mod.message_authentication_code, &new->data[2], sizeof(uint32_t));
+            memcpy(&h_mod.sequence_number, &new->data[7], sizeof(uint8_t));
+            char bufstring[new->len * 2];
+            for (int i = 0; i < new->len; i++) {
+                sprintf(bufstring+i*2, "%02X", new->data[i]);
+            }
+            ogs_debug("TEST OUT NEW: %s", bufstring);
+            ogs_debug("TEST OUT MAC: %02X", h_mod.message_authentication_code);
+            ogs_assert(ogs_pkbuf_pull(new, 7));
+        }
+    }
+
     if (ciphered) {
         /* encrypt NAS message */
         ogs_nas_encrypt(amf_ue->selected_enc_algorithm,
@@ -87,6 +127,7 @@ ogs_pkbuf_t *nas_5gs_security_encode(
             amf_ue->nas.access_type,
             OGS_NAS_SECURITY_DOWNLINK_DIRECTION, new);
     }
+
 
     /* encode sequence number */
     ogs_assert(ogs_pkbuf_push(new, 1));
@@ -112,6 +153,16 @@ ogs_pkbuf_t *nas_5gs_security_encode(
 
     amf_ue->security_context_available = 1;
 
+    if (testcase_enabled(amf_ue->supi)) {
+        ogs_app()->tester.result = true;
+        if (h_mod.message_authentication_code > 0) {
+            memcpy(new->data, &h_mod, sizeof(ogs_nas_5gs_security_header_t));
+            return new;
+        }
+        if (modify == TESTCASE_MODIFY_ENC) {
+            modify_msg(new);
+        }
+    }
     return new;
 }
 

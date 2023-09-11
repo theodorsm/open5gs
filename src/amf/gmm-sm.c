@@ -1570,9 +1570,6 @@ void gmm_state_security_mode(ogs_fsm_t *s, amf_event_t *e)
         switch (nas_message->gmm.h.message_type) {
         case OGS_NAS_5GS_SECURITY_MODE_COMPLETE:
             ogs_debug("[%s] Security mode complete", amf_ue->supi);
-            if (ogs_app()->tester.enabled) {
-                send_res(true, 0);
-            }
 
         /*
          * TS24.501
@@ -1639,9 +1636,6 @@ void gmm_state_security_mode(ogs_fsm_t *s, amf_event_t *e)
             }
             break;
         case OGS_NAS_5GS_SECURITY_MODE_REJECT:
-            if (ogs_app()->tester.enabled) {
-                send_res(false, nas_message->gmm.security_mode_reject.gmm_cause);
-            }
             ogs_warn("[%s] Security mode reject : Cause[%d]",
                     amf_ue->supi,
                     nas_message->gmm.security_mode_reject.gmm_cause);

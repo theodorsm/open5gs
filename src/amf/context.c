@@ -969,11 +969,13 @@ int amf_context_parse_testfile(void)
                     ogs_warn("Max number of testcases reached");
                     break;
                 }
+                /*
                 ogs_app()->tester.testcases[num_of_cases - 1].testcase_id = testcase_id;
                 ogs_app()->tester.testcases[num_of_cases - 1].integrity = integrity;
                 ogs_app()->tester.testcases[num_of_cases - 1].ciphering = ciphering;
                 ogs_app()->tester.testcases[num_of_cases - 1].dereg_timer = dereg_timer;
                 ogs_app()->tester.num_cases = (uint8_t) num_of_cases;
+                */
             } while (ogs_yaml_iter_type(&testcase_array) ==
                     YAML_SEQUENCE_NODE);
         } else

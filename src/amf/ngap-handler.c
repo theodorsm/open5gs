@@ -1563,11 +1563,7 @@ void ngap_handle_ue_context_release_complete(
     ogs_assert(UEContextReleaseComplete);
 
     ogs_debug("UEContextReleaseComplete");
-    /*
-    if (ogs_app()->tester.enabled) {
-        send_release_complete();
-    }
-    */
+
     for (i = 0; i < UEContextReleaseComplete->protocolIEs.list.count; i++) {
         ie = UEContextReleaseComplete->protocolIEs.list.array[i];
         switch (ie->id) {

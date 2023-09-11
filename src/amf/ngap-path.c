@@ -26,6 +26,7 @@
 #include "nas-security.h"
 #include "nas-path.h"
 #include "sbi-path.h"
+#include "testcase-socket.h"
 
 int ngap_open(void)
 {
@@ -213,6 +214,15 @@ int ngap_send_to_nas(ran_ue_t *ran_ue,
 
     h = (ogs_nas_5gmm_header_t *)nasbuf->data;
     ogs_assert(h);
+    if (ran_ue->amf_ue) {
+        if (ran_ue->amf_ue->supi != NULL) {
+            if (testcase_enabled(ran_ue->amf_ue->supi) && ogs_app()->tester.result) {
+                send_msg_type(h->message_type);
+                ogs_app()->tester.result = false;
+                ogs_app()->tester.enabled = false;
+            }
+        }
+    }
     if (h->extended_protocol_discriminator ==
             OGS_NAS_EXTENDED_PROTOCOL_DISCRIMINATOR_5GMM) {
         e = amf_event_new(AMF_EVENT_5GMM_MESSAGE);
